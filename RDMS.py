@@ -36,7 +36,6 @@ while True:
     elif n == "2":
         # LOG IN
         user_nm = input("Enter Your User Name : ").lower()
-        pw = input("Enter Your Password : ")
         q1 = f"""use railways_db;"""
         q2 = f"""select * from user_data where user_nm="{user_nm}";"""
         execute_query(cd, q1)
@@ -44,6 +43,7 @@ while True:
         if rd == []:
             print("Invalid Username !! ")
         else:
+            pw = input("Enter Your Password : ")
             if rd[0][3] == pw:
                 print(
                     f"Hii {user_nm.capitalize()} Indian Railways Welcomes You")
@@ -55,48 +55,84 @@ while True:
                         if s[0].isdigit():
                             if s[0] == "1":  # tested OK
                                 # ticket Booking
-                                ctr = 0
-                                fare = 0
-                                for i in range(int(input("Enter Number Of Passengers : "))):
-                                    print(
-                                        "Trains: Intercity|Rajdhani|Shatabdi|Garib Rath|Duronto")
-                                    tr_nm = input(
-                                        "Enter Tain Name : ").capitalize()
-                                    # sql code
-                                    q1 = f"""select * from train where train_name="{tr_nm}";"""
-                                    v = read_query(cd, q1)
-                                    # info
-                                    nm = input("Enter Your Name : ").upper()
-                                    train_no = v[0][1]
-                                    age = int(input("Enter Your Age : "))
-                                    gd = input(
-                                        "Enter Gender [M/F/Rather Not To Say[RNS]]: ").upper()
-                                    pc = input(
-                                        "Enter Pass Concession [Y/N] : ").upper()
-                                    # --------------------------------
-                                    if tr_nm == "Shatabdi":
-                                        cl = int(
-                                            input("1.First Class (Only First Class is Availabe in Shatabdi Trains!!) : "))
-                                    else:
-                                        cl = int(
-                                            input("1.1st class\n2.second class\n3.third class\nSelect and Enter : "))
-                                    d = {1: "1stclass_fare",
-                                         2: "2ndclass_fare", 3: "3rdclass_fare"}
-                                    # --------------------------------
-                                    # Queries
-                                    q1 = "use railways_db"
-                                    q2 = f"""insert into bookings values("{nm}","{tr_nm}",{train_no},{age},"{gd}",  "{pc}","{d[cl]}");"""
-                                    execute_query(cd, q1)
-                                    execute_query(cd, q2)
-                                    q1 = f""" select {d[cl]} from train where train_no={v[0][1]};"""  # fare
-                                    rd = read_query(cd, q1)
-                                    fare += rd[0][0]
-                                    q2 = f""" select total_seats from train where train_no={train_no};"""
-                                    rd1 = read_query(cd, q2)
-                                    ctr += 1
-                                q3 = f"""update train set total_seats={rd1[0][0]}-{ctr} where train_name="{tr_nm}" && train_no={train_no};"""
-                                rq2 = execute_query(cd, q3)
-                                print(f"Ticket booked By Paying INR {fare}")
+                                print("Trains: Intercity|Rajdhani|Shatabdi|Garib Rath|Duronto")
+                                tr_nm = input("Enter Tain Name : ").capitalize()
+                                q2 = f""" select total_seats from train where  train_name="{tr_nm}";"""
+                                rd1 = read_query(cd, q2)
+                                if rd1[0][0]>=0 and rd1[0][0] <= 2000:
+                                    ctr = 0
+                                    fare = 0
+                                    print(f"Total No Of Seats available is {rd1[0][0]}")
+                                    for i in range(int(input("Enter Number Of Passengers : "))):
+                                        # sql code
+                                        q1 = f"""select * from train where train_name="{tr_nm}";"""
+                                        v = read_query(cd, q1)
+                                        # info
+                                        nm = input("Enter Your Name : ").upper()
+                                        train_no = v[0][1]
+                                        age = int(input("Enter Your Age : "))
+                                        gd = input(
+                                            "Enter Gender [M/F/Rather Not To Say[RNS]]: ").upper()
+                                        pc = input(
+                                            "Enter Pass Concession [Y/N] : ").upper()
+                                    
+                                        # --------------------------------
+                                        cl = int(input("1.1st class\n2.second class\n3.third class\nSelect and Enter : "))
+                                        d = {1: "1stclass_fare",
+                                             2: "2ndclass_fare", 3: "3rdclass_fare"}
+                                        # --------------------------------
+                                        # Queries
+                                        q1 = "use railways_db"
+                                        q2 = f"""insert into bookings values("{nm}","{tr_nm}",{train_no},{age},"{gd}",  "{pc}","{d[cl]}");"""
+                                        execute_query(cd, q1)
+                                        execute_query(cd, q2)
+                                        q1 = f""" select {d[cl]} from train where train_no={v[0][1]};"""  # fare
+                                        rd = read_query(cd, q1)
+                                        if pc[0]=="Y":
+                                            fare=0
+                                        else:
+                                            fare += rd[0][0]
+                                        q2 = f""" select total_seats from train where train_no={train_no};"""
+                                        rd1 = read_query(cd, q2)
+                                        ctr += 1
+                                    q3 = f"""update train set total_seats={rd1[0][0]}-{ctr} where train_name="{tr_nm}" && train_no={train_no};"""
+                                    rq2 = execute_query(cd, q3)
+                                    print(f"Ticket booked By Paying INR {fare}")
+                                elif tr_nm == "Shatabdi" and (rd1[0][0]>=0 and rd1[0][0] <= 800):
+                                    print(f"Total No Of Seats available is {rd1[0][0]}")
+                                    for i in range(int(input("Enter Number Of Passengers : "))):
+                                        # sql code
+                                        q1 = f"""select * from train where train_name="{tr_nm}";"""
+                                        v = read_query(cd, q1)
+                                        # info
+                                        nm = input("Enter Your Name : ").upper()
+                                        train_no = v[0][1]
+                                        age = int(input("Enter Your Age : "))
+                                        gd = input(
+                                            "Enter Gender [M/F/Rather Not To Say[RNS]]: ").upper()
+                                        pc = input(
+                                            "Enter Pass Concession [Y/N] : ").upper()
+                                        # --------------------------------
+                                        cl = int(input("1.1st class\n2.second class\n3.third class\nSelect and Enter : "))
+                                        d = {1: "1stclass_fare",
+                                             2: "2ndclass_fare", 3: "3rdclass_fare"}
+                                        # --------------------------------
+                                        # Queries
+                                        q1 = "use railways_db"
+                                        q2 = f"""insert into bookings values("{nm}","{tr_nm}",{train_no},{age},"{gd}",  "{pc}","{d[cl]}");"""
+                                        execute_query(cd, q1)
+                                        execute_query(cd, q2)
+                                        q1 = f""" select {d[cl]} from train where train_no={v[0][1]};"""  # fare
+                                        rd = read_query(cd, q1)
+                                        fare += rd[0][0]
+                                        q2 = f""" select total_seats from train where train_no={train_no};"""
+                                        rd1 = read_query(cd, q2)
+                                        ctr += 1
+                                    q3 = f"""update train set total_seats={rd1[0][0]}-{ctr} where train_name="{tr_nm}" && train_no={train_no};"""
+                                    rq2 = execute_query(cd, q3)
+                                    print(f"Ticket booked By Paying INR {fare}")
+                                else:
+                                    print(f"No vaccency Try In Other Date Please...")
                                 # Code To be From here
                             elif s[0] == "2":  # tested OK
                                 # ticket Cancelling
