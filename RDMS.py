@@ -137,34 +137,36 @@ while True:
                             elif s[0] == "2":  # tested OK
                                 # ticket Cancelling
                                 ctr = 0
+                                print("Trains: Intercity|Rajdhani|Shatabdi|Garib Rath|Duronto")
+                                tr_nm = input("Enter Tain Name : ").capitalize()
                                 for i in range(int(input("Enter Number Of Tickets to be Cancelled : "))):
-                                    print(
-                                        "Trains: Intercity|Rajdhani|Shatabdi|Garib Rath|Duronto")
-                                    tr_nm = input(
-                                        "Enter Tain Name : ").capitalize()
                                     q1 = f"""select * from train where train_name="{tr_nm}";"""
                                     v = read_query(cd, q1)
                                     nm = input("Enter Your Name : ").upper()
                                     train_no = v[0][1]
                                     q2 = f""" select total_seats from train where train_no={train_no};"""
                                     rd1 = read_query(cd, q2)
-                                    if rd1[0][0] <= 2000:
-                                        age = int(input("Enter Your Age : "))
-                                        q1 = f"""delete from bookings where name="{nm}" && age={age} && train_name="{tr_nm}" train_no={train_no};"""
-                                        q2 = f""" select total_seats from train where train_no={train_no};"""
-                                        rd1 = read_query(cd, q2)
-                                        ctr += 1
-                                        print(
-                                            "Tickets Sucessfully Cancelled!!\n'Apka Dinn Subh Ho'")
-                                    elif rd1[0][0] <= 800 and tr_nm == "Shatabdi":
-                                        age = int(input("Enter Your Age : "))
-                                        q1 = f"""delete from bookings where name="{nm}" && age={age} && train_name="{tr_nm}" train_no={train_no};"""
-                                        q2 = f""" select total_seats from train where train_no={train_no};"""
-                                        rd1 = read_query(cd, q2)
-                                        ctr += 1
-                                        print(
-                                            "Tickets Sucessfully Cancelled!!\n'Apka Dinn Subh Ho'")
-                                    else:
+                                    try:
+                                        if rd1[0][0] <= 2000:
+                                            age = int(input("Enter Your Age : "))
+                                            q1 = f"""delete from bookings where name="{nm}" && age={age} && train_name="{tr_nm}" train_no={train_no};"""
+                                            q2 = f""" select total_seats from train where train_no={train_no};"""
+                                            rd1 = read_query(cd, q2)
+                                            ctr += 1
+                                            print(
+                                                "Tickets Sucessfully Cancelled!!\n'Apka Dinn Subh Ho'")
+                                        elif rd1[0][0] <= 800 and tr_nm == "Shatabdi":
+                                            age = int(input("Enter Your Age : "))
+                                            q1 = f"""delete from bookings where name="{nm}" && age={age} && train_name="{tr_nm}" train_no={train_no};"""
+                                            q2 = f""" select total_seats from train where train_no={train_no};"""
+                                            rd1 = read_query(cd, q2)
+                                            ctr += 1
+                                            print(
+                                                "Tickets Sucessfully Cancelled!!\n'Apka Dinn Subh Ho'")
+                                        else:
+                                            print("Please Book Ticket First..")
+                                            break
+                                    except:
                                         print("Please Book Ticket First..")
                                         break
                                 q3 = f"""update train set total_seats={rd1[0][0]}+{ctr} where train_name="{tr_nm}" && train_no={train_no};"""
